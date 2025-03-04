@@ -92,12 +92,16 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     }
 
     const logout = async () => {
-        if (!error) {
-            await axios.post('/logout').then(() => mutate())
+        try {
+            await axios.post('/logout');
+            mutate(null, false); // ユーザー情報をクリア
+            localStorage.removeItem('auth_token'); // ローカルストレージのトークン削除
+            window.location.pathname = '/login'; // ログインページにリダイレクト
+        } catch (error) {
+            console.error('ログアウトに失敗しました:', error);
         }
+    };
 
-        window.location.pathname = '/login'
-    }
 
     useEffect(() => {
         if (middleware === 'guest' && redirectIfAuthenticated && user)
@@ -105,7 +109,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
         if (middleware === 'auth' && !user?.email_verified_at)
             router.push('/verify-email')
-        
+
         if (
             window.location.pathname === '/verify-email' &&
             user?.email_verified_at

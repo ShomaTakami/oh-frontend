@@ -1,21 +1,29 @@
-import { Nunito } from 'next/font/google'
-import '@/app/global.css'
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 
-const nunitoFont = Nunito({
-    subsets: ['latin'],
-    display: 'swap',
-})
+const inter = Inter({ subsets: ['latin'] });
 
-const RootLayout = ({ children }) => {
-    return (
-        <html lang="en" className={nunitoFont.className}>
-            <body className="antialiased">{children}</body>
-        </html>
-    )
+export const metadata: Metadata = {
+  title: 'OneHub - アンケート管理システム',
+  description: '簡単にアンケートを作成・管理できるシステム',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="ja" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+          <Toaster />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }
-
-export const metadata = {
-    title: 'Laravel',
-}
-
-export default RootLayout
